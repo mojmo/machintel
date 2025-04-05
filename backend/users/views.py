@@ -1,7 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import UserSerializer
-from .models import User
+from rest_framework.views import APIView
+from .serializers import UserSerializer, GuestSessionSerializer
+from .models import User, GuestSession
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -15,3 +16,18 @@ class RegisterView(generics.CreateAPIView):
             'email': serializer.data['email'],
             'username': serializer.data['username'],
         }, status=201)
+
+class GuestSessionCreateView(APIView):
+    def post(self, request):
+        session = GuestSession.objects.create()
+        serializer = GuestSessionSerializer(session)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class GuestSessionDetailView(APIView):
+    def get(self, request, session_id):
+        try:
+            session = GuestSession.objects.get(session_id=session_id)
+            return Response(GuestSessionSerializer(session).data)
+        except GuestSession.DoesNotExist:
+            return Response({'error': 'Invalid session'}, status=status.HTTP_404_NOT_FOUND)

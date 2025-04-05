@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, GuestSession
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class GuestSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GuestSession
+        fields = ['session_id', 'created_at', 'expires_at']
