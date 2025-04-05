@@ -31,3 +31,14 @@ class GuestSessionDetailView(APIView):
             return Response(GuestSessionSerializer(session).data)
         except GuestSession.DoesNotExist:
             return Response({'error': 'Invalid session'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GuestSessionTerminateView(APIView):
+    def post(self, request, session_id):
+        try:
+            session = GuestSession.objects.get(session_id=session_id)
+            session.is_active = False
+            session.save()
+            return Response({'status': 'Session terminated'})
+        except GuestSession.DoesNotExist:
+            return Response({'status': 'Invalid session'}, status=404)

@@ -18,10 +18,15 @@ class GuestSession(models.Model):
     session_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
-    data = models.JSONField(default=dict)
+    is_active = models.BooleanField(default=True)
+    # data = models.JSONField(default=dict)
 
     def save(self, *args, **kwargs):
         if not self.expires_at:
             self.expires_at = timezone.now() + timezone.timedelta(hours=24)
         super().save(*args, **kwargs)
+
+    @property
+    def is_valid(self):
+        return self.is_active and (timezone.now() < self.expires_at)
 
