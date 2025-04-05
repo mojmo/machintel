@@ -134,6 +134,10 @@ AUTHENTICATION_BACKENDS = [
     'users.backends.GuestSessionBackend',
 ]
 
+# Celery Settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'UTC'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
