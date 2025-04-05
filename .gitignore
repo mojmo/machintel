@@ -11,6 +11,9 @@ __pycache__/
 
 # Virtual environment
 .venv/
+venv/
+venv-bak/
+env/
 
 # Node.js
 node_modules/
@@ -21,6 +24,53 @@ npm-debug.log*
 *.pot
 *.pyc
 *.sqlite3
+
+# Ignore database dump files
+*.dump
+*.db
+
+# Ignore Python environment
+.Python
+
+# Ignore coverage reports
+htmlcov/
+
+# SSL KEY
+ssl/
+
+# server 
+*.pid
+
+# database
+*.sql
+
+# File MAINT for Some Testing
+MAINT.py
+.admin
+
+# pytest
+.coverage
+undefined
+
+# Media files (uploads)
+media/
+# Static files
+static/
+staticfiles/
+
+# Local development settings
+local_settings.py
+
+# Secret key file
+secret_key.txt
+
+# File DBBackup 
+backup
+
+# docker mount
+docker
+
+nohup.*
 
 # IDE
 .vscode/
