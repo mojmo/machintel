@@ -15,7 +15,7 @@ class RegisterView(generics.CreateAPIView):
             'message': 'User registered successfully',
             'email': serializer.data['email'],
             'username': serializer.data['username'],
-        }, status=201)
+        }, status=status.HTTP_201_CREATED)
 
 class GuestSessionCreateView(APIView):
     def post(self, request):
@@ -37,8 +37,7 @@ class GuestSessionTerminateView(APIView):
     def post(self, request, session_id):
         try:
             session = GuestSession.objects.get(session_id=session_id)
-            session.is_active = False
-            session.save()
-            return Response({'status': 'Session terminated'})
+            session.delete()
+            return Response({'status': 'Session and all related data deleted'})
         except GuestSession.DoesNotExist:
-            return Response({'status': 'Invalid session'}, status=404)
+            return Response({'status': 'Invalid session'}, status=status.HTTP_404_NOT_FOUND)
