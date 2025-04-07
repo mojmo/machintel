@@ -19,7 +19,7 @@ class DatasetSerializer(serializers.ModelSerializer):
             reader = csv.reader(io_string)
             headers = next(reader)
 
-            required_headers = ['timestamp', 'sensor_value']
+            required_headers = ['Product ID', 'Type','Air temperature', 'Process temperatue', 'Rotational speed', 'Torque', 'Tool wear']
             for col in required_headers:
                 if col not in headers:
                     raise serializers.ValidationError(f"Missing required column: {col}")
