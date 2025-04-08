@@ -7,7 +7,7 @@ class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dataset
         fields = '__all__'
-        read_only_fields = ['uploaded_at', 'user', 'session_key']
+        read_only_fields = ['uploaded_at', 'user', 'session']
 
     def validate_file(self, value):
         if not value.name.endswith('.csv'):
@@ -19,7 +19,7 @@ class DatasetSerializer(serializers.ModelSerializer):
             reader = csv.reader(io_string)
             headers = next(reader)
 
-            required_headers = ['Product ID', 'Type','Air temperature', 'Process temperatue', 'Rotational speed', 'Torque', 'Tool wear']
+            required_headers = ['Product ID', 'Type','Air temperature [K]', 'Process temperature [K]', 'Rotational speed [rpm]', 'Torque [Nm]', 'Tool wear [min]']
             for col in required_headers:
                 if col not in headers:
                     raise serializers.ValidationError(f"Missing required column: {col}")

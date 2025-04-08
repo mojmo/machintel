@@ -5,21 +5,26 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import Dataset
 from .serializers import DatasetSerializer
+from users.models import GuestSession
+from datasets.permissions import IsAuthenticatedOrGuestSession
 
 class DatasetUploadView(APIView):
     parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticatedOrGuestSession]
 
     def post(self, request):
-        if not request.session.session_key:
-            request.session.save()
-        session_key = request.session.session_key
-
         serializer = DatasetSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(
-                user=request.user if request.user.is_authenticated else None,
-                session_key=session_key
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+            if request.user.is_authenticated:
+                serializer.save(user=request.user)
+            elif hasattr(request, 'guest_session'):
+                serializer.save(session=request.guest_session)
+            else:
+                return Response(
+                    {"error": "Authentication required"},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
