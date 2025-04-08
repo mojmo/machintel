@@ -1,8 +1,0 @@
-import joblib
-import os
-
-MODEL_PATH = os.path.join(os.path.dirname(__file__), 'model.pkl')
-model = joblib.load(MODEL_PATH)
-
-def predict(input_data):
-    return model.predict([input_data])
