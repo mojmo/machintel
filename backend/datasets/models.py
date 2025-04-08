@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import User
 
 class Dataset(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    session_key = models.CharField(max_length=40, null=True, blank=True)
+    session = models.ForeignKey('users.GuestSession', on_delete=models.CASCADE, null=True, blank=True)
     file = models.FileField(upload_to='datasets/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
