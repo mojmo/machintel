@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ml_models',  # Your custom app
+    'predictions.apps.PredictionsConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

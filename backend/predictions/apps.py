@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
-class MlModelsConfig(AppConfig):
+class PredictionsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'ml_models'
+    name = 'predictions'
     
     def ready(self):
         # Initialize predictor on startup

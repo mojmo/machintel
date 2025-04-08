@@ -20,5 +20,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('ml_models.urls')),  # Connects to your ML app's URLs
+    path('api/', include('predictions.urls')),  # Connects to your ML app's URLs
 ]

@@ -17,7 +17,7 @@ class PredictiveMaintenanceModel:
         self.features = None
         self.target = None
         self.preprocessor = None
-        self.model_dir = Path(__file__).parent  # Save models in ml_models/
+        self.model_dir = Path(__file__).parent  # Save models in predictions/
         
     def train_model(self, data_path="../../data/ai4i2020.csv"):
         """Train model with automatic feature detection"""
@@ -63,7 +63,7 @@ class PredictiveMaintenanceModel:
             self.model.fit(X_train, y_train)
             self._evaluate(X_test, y_test)
             
-            # Save model to ml_models/
+            # Save model to predictions/
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             model_path = self.model_dir / f"model_{timestamp}.joblib"
             joblib.dump(self.model, model_path)
