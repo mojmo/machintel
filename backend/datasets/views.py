@@ -7,7 +7,7 @@ from .models import Dataset
 from .serializers import DatasetSerializer
 from users.models import GuestSession
 from datasets.permissions import IsAuthenticatedOrGuestSession
-
+from rest_framework.permissions import IsAuthenticated
 class DatasetUploadView(APIView):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = [IsAuthenticatedOrGuestSession]
@@ -28,3 +28,24 @@ class DatasetUploadView(APIView):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserDatasetListView(ListAPIView):
+    serializer_class = DatasetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Dataset.objects.filter(user=self.request.user)
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+
+class UserDatasetDetailView(RetrieveAPIView):
+    serializer_class = DatasetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Dataset.objects.filter(user=self.request.user)
+
+    def get_serializer_context(self):
+        return {'request': self.request}
