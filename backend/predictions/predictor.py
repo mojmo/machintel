@@ -1,8 +1,8 @@
 import pandas as pd
-import joblib
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Union
+import joblib
 
 class PredictiveMaintenancePredictor:
     def __init__(self):

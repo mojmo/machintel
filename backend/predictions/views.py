@@ -52,7 +52,7 @@ class ModelInfoView(APIView):
             
             model_info = {
                 "model_version": latest_model.stem,
-                "last_modified": latest_model.stat().st_mtime,
+                "last_modified": int(latest_model.stat().st_mtime),
                 "features": joblib.load(model_dir / features_file)['features'],
                 "status": "operational"
             }
