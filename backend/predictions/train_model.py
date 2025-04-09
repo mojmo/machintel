@@ -63,11 +63,27 @@ class PredictiveMaintenanceModel:
             self.model.fit(X_train, y_train)
             self._evaluate(X_test, y_test)
             
-            # Save model to predictions/
+            # Save artifacts
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # Save model
             model_path = self.model_dir / f"model_{timestamp}.joblib"
             joblib.dump(self.model, model_path)
+            
+            # Save feature metadata
+            features_path = self.model_dir / f"features_{timestamp}.joblib"
+            joblib.dump({
+                'features': self.features,
+                'target': self.target,
+                'feature_types': {
+                    col: 'numeric' if df[col].dtype in ['int64', 'float64'] else 'categorical' 
+                    for col in self.features
+                },
+                'training_stats': df[self.features].describe().to_dict()
+            }, features_path)
+            
             print(f"\n💾 Model saved to:\n{model_path}")
+            print(f"💾 Feature metadata saved to:\n{features_path}")
             
             return True
             
