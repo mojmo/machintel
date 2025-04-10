@@ -5,4 +5,6 @@ urlpatterns = [
     path('upload/', DatasetUploadView.as_view(), name='dataset-upload'),
     path('my/', UserDatasetListView.as_view(), name='my-datasets'),
     path('my/<int:pk>/', UserDatasetDetailView.as_view(), name='my-dataset-detail'),
+    path('my/<int:pk>/download/', DatasetDownloadView.as_view(), name='dataset-download'),
+
 ]
