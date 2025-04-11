@@ -20,7 +20,7 @@ class PredictiveMaintenanceModel:
         self.model_dir = Path(__file__).parent  # Save models in predictions/
         
     def train_model(self, data_path="../../data/ai4i2020.csv"):
-        """Train model with automatic feature detection"""
+        """Train model with manual preprocessing and SMOTE handling"""
         try:
             # Load data using relative path
             data_path = Path(__file__).parent.parent.parent / "data" / "ai4i2020.csv"
@@ -39,38 +39,48 @@ class PredictiveMaintenanceModel:
                 random_state=42
             )
             
-            # Preprocessing pipeline
+            # Preprocessing setup
             numeric_features = [f for f in self.features if df[f].dtype in ['int64', 'float64']]
             categorical_features = [f for f in self.features if df[f].dtype == 'object']
             
             self.preprocessor = ColumnTransformer([
                 ('num', 'passthrough', numeric_features),
-                ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features)
+                ('cat', OneHotEncoder(handle_unknown='ignore', sparse=False), categorical_features)
             ])
             
-            # Model pipeline
-            self.model = Pipeline([
-                ('preprocessor', self.preprocessor),
-                ('smote', SMOTE(random_state=42)),
-                ('classifier', DecisionTreeClassifier(
-                    random_state=42,
-                    max_depth=5
-                ))
-            ])
+            # Transform data
+            print("🔄 Preprocessing data...")
+            X_train_transformed = self.preprocessor.fit_transform(X_train)
+            X_test_transformed = self.preprocessor.transform(X_test)
             
-            # Train and evaluate
-            print("🔄 Training model...")
-            self.model.fit(X_train, y_train)
-            self._evaluate(X_test, y_test)
+            # Apply SMOTE
+            print("🧪 Applying SMOTE for class balancing...")
+            smote = SMOTE(random_state=42)
+            X_resampled, y_resampled = smote.fit_resample(X_train_transformed, y_train)
+            
+            # Train classifier
+            print("🚀 Training classifier...")
+            classifier = DecisionTreeClassifier(random_state=42, max_depth=5)
+            classifier.fit(X_resampled, y_resampled)
+            
+            # Save model (preprocessor + classifier)
+            self.model = {
+                'preprocessor': self.preprocessor,
+                'classifier': classifier
+            }
+            
+            # Evaluate model
+            y_pred = classifier.predict(X_test_transformed)
+            print("\n📊 Classification Report:")
+            print(classification_report(y_test, y_pred))
+            print("\n🧮 Confusion Matrix:")
+            print(confusion_matrix(y_test, y_pred))
             
             # Save artifacts
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            
-            # Save model
             model_path = self.model_dir / f"model_{timestamp}.joblib"
             joblib.dump(self.model, model_path)
             
-            # Save feature metadata
             features_path = self.model_dir / f"features_{timestamp}.joblib"
             joblib.dump({
                 'features': self.features,
@@ -90,6 +100,7 @@ class PredictiveMaintenanceModel:
         except Exception as e:
             print(f"❌ Training failed: {str(e)}")
             return False
+
     
     def _evaluate(self, X_test, y_test):
         """Generate evaluation metrics"""
