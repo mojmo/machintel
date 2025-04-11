@@ -76,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'users.middleware.GuestSessionMiddleware',
+    'users.middleware.GuestSessionMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
