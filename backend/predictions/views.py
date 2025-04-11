@@ -1,9 +1,13 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from .models import Prediction
 from .serializers import PredictionSerializer
+from permissions.permissions import IsAuthenticatedOrGuestSession
+
 
 class PredictionList(generics.ListAPIView):
     serializer_class = PredictionSerializer
+    permission_classes = [IsAuthenticatedOrGuestSession]
     
     def get_queryset(self):
         queryset = Prediction.objects.all()
@@ -20,3 +24,4 @@ class PredictionList(generics.ListAPIView):
 class PredictionDetail(generics.RetrieveAPIView):
     queryset = Prediction.objects.all()
     serializer_class = PredictionSerializer
+    permission_classes = [IsAuthenticatedOrGuestSession]
