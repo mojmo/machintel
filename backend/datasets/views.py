@@ -62,10 +62,15 @@ class DatasetUploadView(APIView):
 
 class UserDatasetListView(generics.ListAPIView):
     serializer_class = DatasetSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrGuestSession]
 
     def get_queryset(self):
-        return Dataset.objects.filter(user=self.request.user)
+        user = self.request.user
+        session_key = getattr(self.request, 'guest_session', None)
+        if user.is_authenticated:
+            return Dataset.objects.filter(user=user)
+        return Dataset.objects.filter(user__isnull=True, session_key=session_key)
+
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -76,8 +81,13 @@ class UserDatasetDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrGuestSession]
 
     def get_queryset(self):
+        user = self.request.user
+        session_key = getattr(self.request, 'guest_session', None)
+
         try:
-            return Dataset.objects.filter(user=self.request.user)
+            if user.is_authenticated:
+                return Dataset.objects.filter(user=user)
+            return Dataset.objects.filter(user__isnull=True, session_key=session_key)
         except Exception as e:
             print(f"Error retrieving datasets: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
