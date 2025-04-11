@@ -1,74 +1,22 @@
-from pathlib import Path
-import joblib
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .predictor import PredictiveMaintenancePredictor
-from .serializers import PredictionInputSerializer, ModelInfoSerializer
+from rest_framework import generics
+from .models import Prediction
+from .serializers import PredictionSerializer
 
-predictor = PredictiveMaintenancePredictor()
+class PredictionList(generics.ListAPIView):
+    serializer_class = PredictionSerializer
+    
+    def get_queryset(self):
+        queryset = Prediction.objects.all()
+        dataset_id = self.request.query_params.get('dataset')
+        product_id = self.request.query_params.get('product_id')
+        
+        if dataset_id:
+            queryset = queryset.filter(dataset_id=dataset_id)
+        if product_id:
+            queryset = queryset.filter(product_id=product_id)
+            
+        return queryset
 
-class PredictView(APIView):
-    """
-    API endpoint for making predictions
-    """
-    def post(self, request):
-        try:
-            # Validate input data
-            input_data = request.data
-            result = predictor.predict(input_data)
-            
-            if not result['success']:
-                return Response(
-                    {'error': result['error']},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            return Response(result, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            return Response(
-                {'error': str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-class ModelInfoView(APIView):
-    """
-    API endpoint for getting model information
-    """
-    def get(self, request):
-        try:
-            model_dir = Path(__file__).parent
-            model_files = sorted(model_dir.glob("model_*.joblib"))
-            
-            if not model_files:
-                return Response(
-                    {'error': 'No trained models found'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-            
-            latest_model = model_files[-1]
-            features_file = latest_model.name.replace("model_", "features_")
-            
-            model_info = {
-                "model_version": latest_model.stem,
-                "last_modified": int(latest_model.stat().st_mtime),
-                "features": joblib.load(model_dir / features_file)['features'],
-                "status": "operational"
-            }
-            
-            # Validate response data
-            serializer = ModelInfoSerializer(data=model_info)
-            if serializer.is_valid():
-                return Response(serializer.data)
-            
-            return Response(
-                serializer.errors,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-            
-        except Exception as e:
-            return Response(
-                {'error': str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+class PredictionDetail(generics.RetrieveAPIView):
+    queryset = Prediction.objects.all()
+    serializer_class = PredictionSerializer
