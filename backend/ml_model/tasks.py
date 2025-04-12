@@ -38,5 +38,7 @@ def process_dataset(dataset_id):
 
     except Dataset.DoesNotExist:
         print(f"Dataset with ID {dataset_id} does not exist.")
+        raise Exception(f"Dataset with ID {dataset_id} does not exist.")
     except Exception as e:
         print(f"Error processing dataset {dataset_id}: {str(e)}")
+        raise Exception(f"Error processing dataset {dataset_id}: {str(e)}")
