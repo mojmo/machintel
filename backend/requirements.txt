@@ -21,3 +21,7 @@ sqlparse==0.5.3
 tzdata==2025.2
 vine==5.1.0
 wcwidth==0.2.13
+pandas==2.0.3
+scikit-learn==1.3.0
+imbalanced-learn==0.10.1
+joblib==1.3.2

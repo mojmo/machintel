@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/auth/', include('authentication.urls')),
     path('api/users/', include('users.urls')),
     path('api/datasets/', include('datasets.urls')),
+    path('api/predictions/', include('predictions.urls')),
 ]
 # Serve uploaded files during development
 if settings.DEBUG:

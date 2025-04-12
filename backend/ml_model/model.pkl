@@ -1,0 +1,5 @@
+import joblib
+
+# After training the model
+model = Pipeline([...])  # Your trained pipeline
+joblib.dump(model, "backend/ml_models/model.pkl") 
