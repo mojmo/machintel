@@ -69,7 +69,7 @@ class UserDatasetListView(generics.ListAPIView):
         session_key = getattr(self.request, 'guest_session', None)
         if user.is_authenticated:
             return Dataset.objects.filter(user=user)
-        return Dataset.objects.filter(user__isnull=True, session_key=session_key)
+        return Dataset.objects.filter(user__isnull=True, session=session_key)
 
 
     def get_serializer_context(self):
@@ -87,7 +87,7 @@ class UserDatasetDetailView(generics.RetrieveAPIView):
         try:
              if user.is_authenticated:
              return Dataset.objects.filter(user=user)
-         return Dataset.objects.filter(user__isnull=True, session_key=session_key)
+         return Dataset.objects.filter(user__isnull=True, session=session_key)
         except Exception as e:
             print(f"Error retrieving datasets: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
