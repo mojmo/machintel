@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/datasets/', include('datasets.urls')),
     path('api/predictions/', include('predictions.urls')),
+    path('api/insights/', include('insights.urls')),
 ]
 # Serve uploaded files during development
 if settings.DEBUG:
