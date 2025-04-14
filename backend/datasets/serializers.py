@@ -58,7 +58,7 @@ class DatasetWithDataSerializer(serializers.ModelSerializer):
 
     def get_csv_data(self, obj):
         try:
-            df = pd.read_csv(obj.file.path).head(100)  # Limit rows for preview
+            df = pd.read_csv(obj.file.path) # Limit rows for preview
             return df.to_dict(orient='records')
         except:
             print("Error reading csv data")
