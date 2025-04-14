@@ -21,7 +21,7 @@ def generate_insight(dataset_id, dataset_file_path):
     
     genai.configure(api_key=GEMINI_API_KEY)
     model = genai.GenerativeModel("gemini-1.5-flash")
-    prompt = f"Analyze the following dataset and provide insights:\n{df}"
+    prompt = f"Analyze this dataset about CNC milling machines and provide detailed insights.\n{df}"
     response = model.generate_content(prompt)
     
     if response.text:
