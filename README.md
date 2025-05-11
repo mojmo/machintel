@@ -1,6 +1,6 @@
 # MachIntel
 
-![MachIntel Logo](/frontend/public/settings-icon.svg)
+<img src="frontend/public/settings-icon.svg" alt="MachIntel Logo" width="200"/>
 
 ## Project Overview
 MachIntel is a machine learning-based predictive maintenance system for CNC milling machines. It leverages data analytics and AI to predict potential machine failures before they occur, helping manufacturers reduce downtime, optimize maintenance schedules, and extend equipment lifetime.
