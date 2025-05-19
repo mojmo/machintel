@@ -10,7 +10,7 @@ class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dataset
         fields = '__all__'
-        read_only_fields = ['uploaded_at', 'user', 'session']
+        read_only_fields = ['uploaded_at', 'user', 'session', 'status', 'error_message']
 
     def get_file_url(self, obj):
         request = self.context.get('request')
@@ -48,7 +48,7 @@ class DatasetWithDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dataset
-        fields = ['id', 'file', 'file_url', 'uploaded_at', 'csv_data']
+        fields = ['id', 'file', 'file_url', 'uploaded_at', 'status', 'error_message', 'csv_data']
 
     def get_file_url(self, obj):
         request = self.context.get('request')

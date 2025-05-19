@@ -29,11 +29,11 @@ class DatasetUploadView(APIView):
 
             serializer = DatasetSerializer(data=data)
             if serializer.is_valid():
-                # Save dataset
+                # Save dataset with processing status
                 if request.user.is_authenticated:
-                    instance = serializer.save(user=request.user)
+                    instance = serializer.save(user=request.user, status='processing')
                 elif hasattr(request, 'guest_session'):
-                    instance = serializer.save(session=request.guest_session)
+                    instance = serializer.save(session=request.guest_session, status='processing')
                 else:
                     return Response(
                         {"error": "Authentication required"},
@@ -45,6 +45,10 @@ class DatasetUploadView(APIView):
                 try:
                     process_dataset.delay(instance.id)
                 except Exception as e:
+                    # Update dataset status to error
+                    instance.status = 'error'
+                    instance.error_message = "Failed to start prediction processing"
+                    instance.save()
                     raise Exception("Failed to generate predictions.")
 
                 # Generate insights
@@ -77,7 +81,7 @@ class UserDatasetListView(generics.ListAPIView):
         return {'request': self.request}
 
 
-class UserDatasetDetailView(generics.RetrieveAPIView):
+class UserDatasetDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = DatasetWithDataSerializer
     permission_classes = [IsAuthenticatedOrGuestSession]
 
@@ -95,6 +99,12 @@ class UserDatasetDetailView(generics.RetrieveAPIView):
 
     def get_serializer_context(self):
         return {'request': self.request}
+    
+    def perform_destroy(self, instance):
+        # Delete associated predictions if there are any
+        Prediction.objects.filter(dataset=instance).delete()
+        # Delete the dataset
+        instance.delete()
 
 
 import numpy as np
