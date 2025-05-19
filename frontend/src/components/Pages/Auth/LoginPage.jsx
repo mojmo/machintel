@@ -71,11 +71,13 @@ const LoginPage = () => {
       await login(formData);
       navigate('/datasets');
     } catch (error) {
-      setApiError(
-        typeof error === 'string' 
-          ? error 
-          : 'Failed to login. Please check your credentials.'
-      );
+      console.error('Login error:', error);
+      
+      const errorMessage = typeof error === 'string' 
+        ? error 
+        : error?.message || 'Failed to login. Please check your credentials.';
+      
+      setApiError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +89,8 @@ const LoginPage = () => {
       await loginAsGuest();
       navigate('/datasets');
     } catch (error) {
-      setApiError(`Failed to start guest session. Please try again. ${error}`);
+      console.error('Guest login error:', error);
+      setApiError(error?.message || 'Failed to start guest session. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +109,23 @@ const LoginPage = () => {
           <img src="/settings-icon.svg" alt="MachIntel" className="auth-logo" />
         </div>
         
-        {apiError && <div className="error-message">{apiError}</div>}
+        {apiError && (
+          <div className="error-message">
+            {apiError.includes('\n') ? (
+              <ul className="error-list">
+                {apiError.split('\n').map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            ) : (
+              apiError
+            )}
+          </div>
+        )}
+        
+        <div className="login-info">
+          <p>Please enter your registered email and password to log in.</p>
+        </div>
         
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
@@ -118,6 +137,7 @@ const LoginPage = () => {
               value={formData.email}
               onChange={handleChange}
               className={errors.email ? 'error' : ''}
+              placeholder="Your email address"
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
@@ -131,8 +151,10 @@ const LoginPage = () => {
               value={formData.password}
               onChange={handleChange}
               className={errors.password ? 'error' : ''}
+              placeholder="Your password"
             />
             {errors.password && <span className="error-text">{errors.password}</span>}
+            <span className="help-text">Forgot your password? Contact an administrator for assistance.</span>
           </div>
           
           <button type="submit" className="auth-button" disabled={isLoading}>

@@ -6,26 +6,57 @@ const USERS_API = `${API_URL}/users`;
 
 // Register a new user
 const register = async (userData) => {
-  const response = await axios.post(`${USERS_API}/register/`, userData);
-  return response.data;
+  try {
+    const response = await axios.post(`${USERS_API}/register/`, userData);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      // Just pass through the error response data without modification
+      // Let the component handle the formatting based on the structure
+      throw error.response.data;
+    }
+    throw new Error('Registration failed. Please try again later.');
+  }
 };
 
 // Login a user
 const login = async (credentials) => {
-  const response = await axios.post(`${AUTH_API}/token/`, credentials);
-  if (response.data.access) {
-    localStorage.setItem('authToken', response.data.access);
-    // Save refresh token for refreshing session
-    if (response.data.refresh) {
-      localStorage.setItem('refreshToken', response.data.refresh);
+  try {
+    const response = await axios.post(`${AUTH_API}/token/`, credentials);
+    if (response.data.access) {
+      localStorage.setItem('authToken', response.data.access);
+      // Save refresh token for refreshing session
+      if (response.data.refresh) {
+        localStorage.setItem('refreshToken', response.data.refresh);
+      }
+      
+      // Save user data if provided
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
     }
-    
-    // Save user data if provided
-    if (response.data.user) {
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 401) {
+        throw new Error('Invalid email or password.');
+      } else if (error.response.data) {
+        // Format field errors for better display
+        if (typeof error.response.data === 'object' && !error.response.data.message) {
+          const formattedErrors = Object.entries(error.response.data)
+            .map(([field, messages]) => {
+              // Handle both string and array error messages
+              const errorMessage = Array.isArray(messages) ? messages.join(', ') : messages;
+              return `${field}: ${errorMessage}`;
+            })
+            .join('\n');
+          throw formattedErrors;
+        }
+        throw error.response.data;
+      }
     }
+    throw new Error('Login failed. Please try again later.');
   }
-  return response.data;
 };
 
 // Refresh access token using refresh token
@@ -60,12 +91,22 @@ const refreshToken = async () => {
 
 // Login as guest
 const loginAsGuest = async () => {
-  const response = await axios.post(`${USERS_API}/guest-sessions/`);
-  if (response.data.session_id) {
-    localStorage.setItem('guestToken', response.data.session_id);
-    localStorage.setItem('isGuest', 'true');
+  try {
+    const response = await axios.post(`${USERS_API}/guest-sessions/`);
+    if (response.data.session_id) {
+      localStorage.setItem('guestToken', response.data.session_id);
+      localStorage.setItem('isGuest', 'true');
+    }
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      if (typeof error.response.data === 'object' && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error.response.data;
+    }
+    throw new Error('Failed to start guest session. Please try again later.');
   }
-  return response.data;
 };
 
 // Logout user

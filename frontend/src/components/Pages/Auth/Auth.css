@@ -52,6 +52,50 @@
   margin-bottom: 1rem;
 }
 
+.auth-requirements {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--primary-color);
+}
+
+.auth-requirements h3 {
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.auth-requirements ul {
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.auth-requirements li {
+  margin-bottom: 0.4rem;
+  color: var(--text-light);
+}
+
+.auth-requirements ul ul {
+  margin-top: 0.4rem;
+}
+
+.login-info {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--info-color);
+}
+
+.login-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
@@ -83,6 +127,88 @@
   display: block;
 }
 
+.help-text {
+  color: var(--text-light);
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  display: block;
+  font-style: italic;
+}
+
+.password-strength {
+  margin-top: 0.5rem;
+}
+
+.strength-meter {
+  height: 5px;
+  background-color: #eee;
+  border-radius: 3px;
+  position: relative;
+  margin-bottom: 0.3rem;
+}
+
+.strength-meter-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.strength-0 {
+  background-color: #ff4136; /* Very weak - red */
+}
+
+.strength-1, .strength-2 {
+  background-color: #ff851b; /* Weak - orange */
+}
+
+.strength-3 {
+  background-color: #ffdc00; /* Medium - yellow */
+}
+
+.strength-4 {
+  background-color: #2ecc40; /* Strong - green */
+}
+
+.strength-5 {
+  background-color: #01ff70; /* Very strong - bright green */
+}
+
+.strength-text {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+/* Password requirement checks */
+.password-checks {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  color: var(--text-light);
+  transition: color 0.3s ease;
+}
+
+.check.valid {
+  color: var(--success-color);
+}
+
+.check-icon {
+  width: 18px;
+  display: inline-block;
+  margin-right: 0.3rem;
+}
+
+.check-text {
+  flex: 1;
+}
+
 .error-message {
   background-color: rgba(220, 53, 69, 0.1);
   color: var(--danger-color);
@@ -90,6 +216,16 @@
   border-radius: var(--border-radius);
   margin: 1rem auto;
   font-size: 0.9rem;
+  border-left: 4px solid var(--danger-color);
+}
+
+.error-list {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.error-list li {
+  margin-bottom: 0.4rem;
 }
 
 .auth-button {

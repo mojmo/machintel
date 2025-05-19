@@ -61,7 +61,12 @@ export const AuthProvider = ({ children }) => {
       });
       return userData;
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      console.error('Login error:', err);
+      const errorMessage = typeof err === 'string' 
+        ? err 
+        : err?.message || 'Login failed. Please check your credentials.';
+      
+      setError(errorMessage);
       throw err;
     }
   };
@@ -73,8 +78,19 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.register(userData);
       return response;
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
-      throw err;
+      console.error('Registration error:', err);
+      
+      // Pass through the error to be handled by the component
+      if (typeof err === 'object' && err !== null) {
+        throw err;
+      } else {
+        const errorMessage = typeof err === 'string' 
+          ? err 
+          : 'Registration failed. Please try again.';
+        
+        setError(errorMessage);
+        throw err;
+      }
     }
   };
 
@@ -90,7 +106,12 @@ export const AuthProvider = ({ children }) => {
       });
       return userData;
     } catch (err) {
-      setError(err.response?.data?.message || 'Guest login failed. Please try again.');
+      console.error('Guest login error:', err);
+      const errorMessage = typeof err === 'string' 
+        ? err 
+        : err?.message || 'Guest login failed. Please try again.';
+      
+      setError(errorMessage);
       throw err;
     }
   };
