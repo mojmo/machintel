@@ -152,6 +152,41 @@ const PredictionsPage = () => {
     );
   }
   
+  // Show error message if the dataset has error status
+  if (dataset && dataset.status === 'error') {
+    return (
+      <div className="predictions-page error-state">
+        <div className="page-header">
+          <h1>Prediction Results</h1>
+        </div>
+        <div className="error-message">
+          <h3>Dataset Processing Error</h3>
+          <p>{dataset.error_message || 'There was an error processing this dataset.'}</p>
+          <p>The dataset features may not match the required format or contain invalid values.</p>
+        </div>
+        <button className="primary-btn" onClick={() => navigate(`/datasets/${dataset.id}`)}>
+          Back to Dataset Details
+        </button>
+      </div>
+    );
+  }
+  
+  // Show processing state if the dataset is still being processed
+  if (dataset && dataset.status === 'processing') {
+    return (
+      <div className="predictions-page loading-state">
+        <div className="page-header">
+          <h1>Prediction Results</h1>
+        </div>
+        <div className="loading-spinner"></div>
+        <p className="loading-text">Processing dataset... Please check back in a few moments.</p>
+        <button className="secondary-btn" onClick={() => navigate(`/datasets/${dataset.id}`)}>
+          Back to Dataset Details
+        </button>
+      </div>
+    );
+  }
+  
   if (error || !dataset || !predictions) {
     return (
       <div className="predictions-page error-state">

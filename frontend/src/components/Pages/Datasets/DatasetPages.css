@@ -608,6 +608,52 @@
   gap: 1rem;
 }
 
+.delete-btn {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #bd2130;
+}
+
+.primary-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.secondary-btn:hover {
+  background-color: var(--primary-light);
+  color: white;
+}
+
 .dataset-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -835,6 +881,33 @@
   border-radius: var(--border-radius);
   margin-bottom: 1.5rem;
   font-weight: 500;
+}
+
+.error-message-container {
+  margin-bottom: 1.5rem;
+}
+
+.error-message h3 {
+  color: #d32f2f;
+  margin-bottom: 0.5rem;
+}
+
+/* Dataset status indicators */
+.status-uploaded {
+  color: #757575;
+}
+
+.status-processing {
+  color: #2196f3;
+}
+
+.status-processed {
+  color: #4caf50;
+}
+
+.status-error {
+  color: #d32f2f;
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {
