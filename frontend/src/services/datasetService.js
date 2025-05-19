@@ -93,7 +93,7 @@ const downloadDataset = async (id) => {
 
 // Delete a dataset
 const deleteDataset = async (id) => {
-  const response = await axios.delete(`${DATASETS_API}/${id}/`, getAuthHeader());
+  const response = await axios.delete(`${DATASETS_API}/my/${id}/`, getAuthHeader());
   return response.data;
 };
 
